@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time Style Update</title>
+  <style>
+    .content {
+      background-color: white;
+      color: black;
+      padding: 20px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div id="content" class="content">
+    <h1>Real-time Style Update Example</h1>
+    <p>This is the default content.</p>
+  </div>
+
+  <script>
+    const defaultStyles = {
+      backgroundColor: 'white',
+      color: 'black',
+      borderColor: '#ddd'
+    };
+
+    const updateStyles = (newStyles) => {
+      const content = document.getElementById('content');
+      content.style.backgroundColor = newStyles.backgroundColor;
+      content.style.color = newStyles.color;
+      content.style.borderColor = newStyles.borderColor;
+    };
+
+    const restoreDefaultStyles = () => {
+      updateStyles(defaultStyles);
+    };
+
+    const fetchStylesFromBackend = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/get-styles');
+        const data = await response.json();
+
+        if (data.useDefault) {
+          restoreDefaultStyles();
+        } else {
+          updateStyles(data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch styles:', err);
+      }
+    };
+
+    const applyRealTimeUpdate = () => {
+      fetchStylesFromBackend();
+    };
+
+    setInterval(applyRealTimeUpdate, 5 * 60 * 1000);
+
+    applyRealTimeUpdate();
+  </script>
+</body>
+</html>
